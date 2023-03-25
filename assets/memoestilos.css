@@ -9,14 +9,14 @@ html {
     font-family: Fredoka;
 }
 
-.juego {
+.game {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.controles {
+.controls {
     display: flex;
     gap: 20px;
     margin-bottom: 20px;
@@ -47,8 +47,7 @@ button {
     position: relative;
 }
 
-.board,
-.ganaste {
+.board, .win {
     border-radius: 5px;
     box-shadow: 0 25px 50px rgb(33 33 33 / 25%);
     background: white;
@@ -93,6 +92,38 @@ button {
     font-size: 28pt;
     user-select: none;
     text-align: center;
-    
+    line-height: 100px;
+    background: whitesmoke;
+    border: 1px solid lavender;
 }
 
+.card-flipped, .card-front {
+    transform: rotateY(180deg) rotateZ(50deg);
+}
+.card-flipped, .card-back {
+    transform: rotateY(0) rotateZ(0);
+}
+
+.win {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: cente;
+    background: whitesmoke;
+    transform: rotateY(180deg) rotateZ(50deg);
+}
+
+.win-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 21px;
+    color: #282A3A;
+}
+
+.highlight {
+    color: #c03b6b;
+}
