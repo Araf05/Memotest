@@ -1,15 +1,15 @@
 const emojis = ['🕷','🐝','🐛','🦋','🐌','🐞','🐜','🪰','🦗','🪲']
 
-/* constatntes variables que no se modifican*/
+/* constantes variables que no se modifican*/
 
 const selectors = {
-    boardContainer: document.querySelector('.board-container'),
-    board: document.querySelector('.board'),
-    moves: document.querySelector('.moves'),
-    timer: document.querySelector('.timer'),
-    start: document.querySelector('#start'),
-    restart: document.querySelector('#restart'),
-    win: document.querySelector('.win')
+    boardContainer: document.querySelector(".board-container"),
+    board: document.querySelector(".board"),
+    moves: document.querySelector(".moves"),
+    timer: document.querySelector(".timer"),
+    start: document.querySelector("#start"),
+    restart: document.querySelector("#restart"),
+    win: document.querySelector(".win")
 }
 
 const state = {
@@ -20,7 +20,7 @@ const state = {
     loop: null
 }
 
-const dimension = selectors.board.getAttribute('data-dimension') // === 4
+const dimension = selectors.board.getAttribute("data-dimension") // === 4
 
 // CORE DEL MEMOTEST
 
@@ -49,7 +49,7 @@ const pickRandom = (array, items) => {
 
 const validateDimension = () => {
     if ( dimension % 2 != 0) {
-      throw new Error ('The dimension of the board must be an even number.')
+      throw new Error ("The dimension of the board must be an even number.")
     }
 }
 
@@ -57,22 +57,23 @@ const generateGame = () => {
     validateDimension()
     const picks = pickRandom(emojis, dimension * dimension / 2)
     const items = shuffle([...picks, ...picks])
-    const cards = items.reduce( (acc, element) => {
+    const card = items.reduce( (acc, element) => {
         return acc + `
-            <div class='cards'>
-                <div class='card-front'></div>
-                <div class='card-back'>
+            <div class="card">
+                <div class="card-front">
+                </div>
+                <div class="card-back">
                     ${element}
                 </div>
             </div>
         `
     }, "" )
-    selectors.board.innerHTML = cards
+    selectors.board.innerHTML = card
 }
 
 const startGame = () => {
     state.gameStarted = true
-    selectors.start.classlist.add('disabled')
+    selectors.start.classList.add("disabled")
     state.loop = setInterval(() => {
         state.totalTime++
         selectors.moves.innerText = `${state.totalFlips} moves`
@@ -80,15 +81,72 @@ const startGame = () => {
     }, 1000)
 }
 
-const flippCard = card => {
+const flipBackCards = () => {
+    document.querySelectorAll(`.card:not(.matched)`).forEach ( card => {
+        card.classList.remove("flipped")
+    })
+}
+
+const flipCard = card => {
     state.flippedCards++
     state.totalFlips++
 
-    if (!state.gameStarted) {
+    if ( !state.gameStarted ) {
         startGame()
     }
 
-    
+    if  ( state.flippedCards <= 2 ) {
+        card.classList.add("flipped")
+    }
+
+    if ( state.flippedCards === 2 ) {
+        const flippedCards = document.querySelectorAll(`.flipped:not(.matched)`)
+
+        if ( flippedCards[0].innerText === flippedCards[1].innerText ) {
+            flippedCards[0].classList.add("matched")
+            flippedCards[1].classList.add("matched")
+        }
+    }
+
+    setTimeout( () => {
+        flipBackCards()
+    }, 1000 )
+
+    if ( !document.querySelectorAll( `.card:not(.flipped)`).length) {
+        setTimeout(() => {
+            selectors.boardContainer.classList.add("flipped")
+            selectors.win.innerHTML = `
+                <span class="win-text">
+                    You won!
+                    <p>
+                        With <span class="highlight"> ${state.totalFlips} moves </span>
+                    </p>
+                    <p>
+                        under <span class="highlight"> ${state.totalTime } seconds </span>
+                    </p>
+                </span>
+            `
+            clearInterval(state.loop)
+        }, 1000)
+    }
+}
+
+const attachEventListeners = () => {
+    document.addEventListener( "click", e => {
+        const eventTarget = e.target
+        const eventParent = eventTarget.parentElement
+
+        if ( eventTarget.className.includes("card") && !eventParent.className.includes("flipped")) {
+            flipCard(eventParent)
+        } else if ( eventTarget.nodeName === "button" && !eventTarget.className.includes("disabled")) {
+            startGame
+        }
+
+        if ( eventTarget.id === "restart" ) {
+            window.location.reload()
+        }
+    })
 }
 
 generateGame()
+attachEventListeners()
