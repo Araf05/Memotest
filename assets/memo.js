@@ -71,6 +71,7 @@ const generateGame = () => {
     selectors.board.innerHTML = card
 }
 
+
 const startGame = () => {
     state.gameStarted = true
     selectors.start.classList.add("disabled")
