@@ -1,14 +1,11 @@
 const emojis = ['🕷','🐝','🐛','🦋','🐌','🐞','🐜','🪰','🦗','🪲']
 
-/* constantes variables que no se modifican*/
-
 const selectors = {
     boardContainer: document.querySelector(".board-container"),
     board: document.querySelector(".board"),
     moves: document.querySelector(".moves"),
     timer: document.querySelector(".timer"),
-    start: document.querySelector("#start"),
-    restart: document.querySelector("#restart"),
+    start: document.querySelector("#start"),    
     win: document.querySelector(".win")
 }
 
@@ -20,44 +17,42 @@ const state = {
     loop: null
 }
 
-const dimension = selectors.board.getAttribute("data-dimension") // === 4
-
-// CORE DEL MEMOTEST
+const dimension = selectors.board.getAttribute("data-dimension")
 
 const shuffle = array => {
     const clonedArray = [...array]
 
-    for (let i = clonedArray.length -1; i > 0; i--) {
-        const randomIndex = Math.floor( Math.random () * (i+1))
+    for( let i = clonedArray.length - 1; i > 0; i-- ){
+        const randomIndex = Math.floor(Math.random() * (i + 1))   
         const original = clonedArray[i]
         clonedArray[i] = clonedArray[randomIndex]
-        clonedArray[randomIndex] = original
-    }
-    return clonedArray
+        clonedArray[randomIndex] = original          
+    }  
+    return clonedArray  
 }
 
-const pickRandom = (array, items) => {
+const pickRandom = ( array, items ) => {
     const randomPicks = []
-
-    for (let i = 0; i < items; i++) {
-        const randomIndex = Math.floor (Math.random () * array.length)
+    
+    for(let i = 0; i < items; i++){
+        const randomIndex = Math.floor(Math.random() * array.length)        
         randomPicks.push(array[randomIndex])
         array.splice(randomIndex, 1)
     }
     return randomPicks
 }
 
-const validateDimension = () => {
-    if ( dimension % 2 != 0) {
-      throw new Error ("The dimension of the board must be an even number.")
+const validateDimension = () => {    
+    if ( dimension % 2 !== 0 ) {
+        throw new Error("The dimension of the board must be an even number.")
     }
 }
 
 const generateGame = () => {
-    validateDimension()
-    const picks = pickRandom(emojis, dimension * dimension / 2)
-    const items = shuffle([...picks, ...picks])
-    const card = items.reduce( (acc, element) => {
+    validateDimension()  
+    const picks = pickRandom( emojis, dimension * dimension / 2 )    
+    const items = shuffle([...picks, ...picks])    
+    const cards = items.reduce(( acc, element ) => {
         return acc + `
             <div class="card">
                 <div class="card-front">
@@ -67,8 +62,8 @@ const generateGame = () => {
                 </div>
             </div>
         `
-    }, "" )
-    selectors.board.innerHTML = card
+    }, "")
+    selectors.board.innerHTML = cards     
 }
 
 
@@ -78,14 +73,17 @@ const startGame = () => {
     state.loop = setInterval(() => {
         state.totalTime++
         selectors.moves.innerText = `${state.totalFlips} moves`
-        selectors.timer.innerText = `time ${state.totalTime} sec`
+        selectors.timer.innerHTML = `time: ${state.totalTime} sec`
     }, 1000)
 }
 
+
 const flipBackCards = () => {
-    document.querySelectorAll(`.card:not(.matched)`).forEach ( card => {
+    document.querySelectorAll(`.card:not(.matched)`).forEach( card => {
         card.classList.remove("flipped")
     })
+
+    state.flippedCards = 0
 }
 
 const flipCard = card => {
@@ -95,12 +93,12 @@ const flipCard = card => {
     if ( !state.gameStarted ) {
         startGame()
     }
-
-    if  ( state.flippedCards <= 2 ) {
+    
+    if( state.flippedCards <= 2 ) {
         card.classList.add("flipped")
     }
 
-    if ( state.flippedCards === 2 ) {
+    if( state.flippedCards === 2 ) {
         const flippedCards = document.querySelectorAll(`.flipped:not(.matched)`)
 
         if ( flippedCards[0].innerText === flippedCards[1].innerText ) {
@@ -109,21 +107,27 @@ const flipCard = card => {
         }
     }
 
-    setTimeout( () => {
+    setTimeout(() => {
         flipBackCards()
-    }, 1000 )
+    }, 2000)
 
-    if ( !document.querySelectorAll( `.card:not(.flipped)`).length) {
+    if ( !document.querySelectorAll(".card:not(.flipped)").length ) {
         setTimeout(() => {
             selectors.boardContainer.classList.add("flipped")
             selectors.win.innerHTML = `
                 <span class="win-text">
                     You won!
                     <p>
-                        With <span class="highlight"> ${state.totalFlips} moves </span>
+                        With 
+                            <span class="highlight">
+                                ${state.totalFlips} moves
+                            </span>
                     </p>
                     <p>
-                        under <span class="highlight"> ${state.totalTime } seconds </span>
+                        under
+                            <span class="highlight">
+                                ${state.totalTime} seconds
+                            </span>
                     </p>
                 </span>
             `
@@ -132,22 +136,26 @@ const flipCard = card => {
     }
 }
 
+
+
+
 const attachEventListeners = () => {
     document.addEventListener( "click", e => {
         const eventTarget = e.target
-        const eventParent = eventTarget.parentElement
-
-        if ( eventTarget.className.includes("card") && !eventParent.className.includes("flipped")) {
+        const eventParent = eventTarget.parentElement           
+        
+        if ( eventTarget.className.includes("card") && !eventParent.className.includes("flipped")){
             flipCard(eventParent)
-        } else if ( eventTarget.nodeName === "button" && !eventTarget.className.includes("disabled")) {
+        } else if ( eventTarget.nodeName === "BUTTON" && !eventTarget.className.includes("disabled")) {
             startGame
         }
-
-        if ( eventTarget.id === "restart" ) {
+        
+        if ( eventTarget.id === "restart"){
             window.location.reload()
         }
     })
 }
+
 
 generateGame()
 attachEventListeners()

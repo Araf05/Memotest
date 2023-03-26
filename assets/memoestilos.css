@@ -11,7 +11,7 @@ html {
 
 .game {
     position: absolute;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -38,7 +38,7 @@ button {
     font-weight: 400;
 }
 
-.state {
+.stats {
     color: #FFF;
     font-size: 14pt;
 }
@@ -47,7 +47,8 @@ button {
     position: relative;
 }
 
-.board, .win {
+.board,
+.win {
     border-radius: 5px;
     box-shadow: 0 25px 50px rgb(33 33 33 / 25%);
     background: white;
@@ -67,7 +68,7 @@ button {
 }
 
 .board-container.flipped .win {
-    transform: rotateY('0') rotateZ('0');
+    transform: rotateY(0) rotateZ(0);
 }
 
 .card {
@@ -77,7 +78,8 @@ button {
     cursor: pointer;
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
     position: absolute;
     border-radius: 5px;
     width: 100%;
@@ -97,11 +99,11 @@ button {
     border: 1px solid #9e9e9e;
 }
 
-.card-flipped, .card-front {
+.card.flipped .card-front {
     transform: rotateY(180deg) rotateZ(50deg);
 }
 
-.card-flipped, .card-back {
+.card.flipped .card-back {
     transform: rotateY(0) rotateZ(0);
 }
 
@@ -121,10 +123,10 @@ button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 21px;
+    font-size: 21pt;
     color: #282A3A;
 }
 
 .highlight {
-    color: #c03b6b;
+    color: #c0386b;
 }
