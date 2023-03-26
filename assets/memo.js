@@ -109,7 +109,7 @@ const flipCard = card => {
 
     setTimeout(() => {
         flipBackCards()
-    }, 2000)
+    }, 3000)
 
     if ( !document.querySelectorAll(".card:not(.flipped)").length ) {
         setTimeout(() => {
@@ -132,7 +132,7 @@ const flipCard = card => {
                 </span>
             `
             clearInterval(state.loop)
-        }, 1000)
+        }, 2000)
     }
 }
 
